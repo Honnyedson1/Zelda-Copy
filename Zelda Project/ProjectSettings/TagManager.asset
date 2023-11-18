@@ -6,6 +6,12 @@ TagManager:
   tags:
   - Espada
   - Enemy
+  - Keys
+  - Espada2
+  - Arco
+  - Book
+  - Coin
+  - Healf
   layers:
   - Default
   - TransparentFX
