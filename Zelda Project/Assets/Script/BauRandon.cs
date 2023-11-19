@@ -10,7 +10,6 @@ public class BauRandon : MonoBehaviour
     public GameObject[] items;
     private Animator anim;
     private Player controler;
-    public int keys;
 
     private void Start()
     {
@@ -20,30 +19,18 @@ public class BauRandon : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Player") && keys >= 1)
+        if (collision.gameObject.CompareTag("Player") && controler.HasKey())
         {
-            keys -= 1;
+            controler.UseKey();
             anim.SetTrigger("Open");
             OpenChest();
         }
     }
-
-    public void SomarKeys()
-    {
-        keys++;
-    }
-
-    public void SubtrairKeys()
-    {
-        keys--;
-    }
-
     private void OpenChest()
     {
         if (items.Length >= 0)
         {
-            SubtrairKeys();
-            controler.subtrairKeys(1);
+            controler.KeysC.SetActive(false);
             int randomIndex = Random.Range(0, items.Length);
             Destroy(GetComponent<BoxCollider2D>());
             Destroy(GetComponent<BauRandon>());

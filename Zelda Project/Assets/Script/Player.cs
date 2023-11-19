@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -9,12 +10,12 @@ public class Player : MonoBehaviour
     public Animator animator;
     public Rigidbody2D rb;
     public GameObject Arco;
-    
 
     [Header("Variaveis int: ")]
     public int life;
-    public  int keys;
+    public int keysInventory;
     public int flechas;
+    public int coin;
 
     [Header("Variaveis float: ")]
     public float speed = 5f;
@@ -35,20 +36,77 @@ public class Player : MonoBehaviour
     public bool AtackArco;
     public bool EstouComEspada = true;
     
-    [Header("Arco e Flecha:")]
+    [Header("Arco e Flecha: ")]
     public GameObject flechaPrefab; 
     public Transform firePoint;     
     public float flechaSpeedV;
-    public float flechaSpeedH; 
-    
+    public float flechaSpeedH;
+
+    [Header("Canvas: ")] 
+    public GameObject SwoordM;
+    public GameObject SwoordF;
+    public GameObject ArcoCanvas;
+    public GameObject KeysDors;
+    public GameObject KeysC;
+    public GameObject IndicadorArco;
+    public GameObject IndicadorEspada;
+    public Text TextMoeda;
+    public Text TextLife;
+    public Text TextFlechas;
 
     void Start()
     {
+        UpdateCanvas();
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
+        keysInventory = 0;
     }
-
     void Update()
+    {
+        AtackETroca();
+        UpdateCanvas();
+    }
+    private void FixedUpdate()
+    {
+        Move();
+        if (flechas <= 0)
+        {
+            ArcoLiberado = false;
+            Arco.SetActive(false);
+            ArcoCanvas.SetActive(false);
+            IndicadorArco.SetActive(false);
+        }
+    }
+    void UpdateCanvas()
+    {
+        TextFlechas.text = " " + flechas;
+        TextLife.text = " " + life;
+        TextMoeda.text = " " + coin;
+    }
+    void AtackETroca()
+    {
+        if (Input.GetKeyDown(KeyCode.Q) && ArcoLiberado == true)
+        { 
+            IndicadorEspada.SetActive(false);
+            IndicadorArco.SetActive(true);
+            AtackArco = true;
+            EstouComEspada = false;
+            Arco.gameObject.SetActive(true);
+        }
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            IndicadorEspada.SetActive(true);
+            IndicadorArco.SetActive(false);
+            EstouComEspada = true;
+            AtackArco = false;
+            Arco.gameObject.SetActive(false);
+        }
+        if (Input.GetMouseButton(0) && AtackArco == true && isAttacking == false)
+        {
+            StartCoroutine(CorotinaAtaqueArco());
+        }
+    }
+    void Move()
     {
         if (walkLiberado == true)
         {
@@ -68,24 +126,7 @@ public class Player : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.Q) && ArcoLiberado == true)
-        { 
-            AtackArco = true;
-            EstouComEspada = false;
-            Arco.gameObject.SetActive(true);
-        }
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            EstouComEspada = true;
-            AtackArco = false;
-            Arco.gameObject.SetActive(false);
-        }
-        if (Input.GetMouseButton(0) && AtackArco == true && isAttacking == false)
-        {
-            StartCoroutine(CorotinaAtaqueArco());
-        }
     }
-
     void UpdateAnimationState()
     {
         if (walkLiberado == true)
@@ -105,7 +146,6 @@ public class Player : MonoBehaviour
             }
             else if (horizontal < 0)
             {
-                
                 flechaSpeedH = -10f;
                 flechaSpeedV = 0f;
                 transform.eulerAngles = new Vector3(0f, 0f, 0f);
@@ -117,7 +157,6 @@ public class Player : MonoBehaviour
             }
             else if (vertical > 0)
             {
-               
                 flechaSpeedV = 10f;
                 flechaSpeedH = 0f;
                 AttackUp = true;
@@ -156,7 +195,6 @@ public class Player : MonoBehaviour
             }
         }
     }
-
     IEnumerator AttackCoroutine()
     {
         if (EspadaLiberada == true)
@@ -246,8 +284,6 @@ public class Player : MonoBehaviour
             isAttacking = false;
         }
     }
-
-
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.tag == "Enemy")
@@ -256,34 +292,58 @@ public class Player : MonoBehaviour
         }
         if (other.gameObject.tag == "Espada")
         {
+            SwoordM.SetActive(true);
+            SwoordF.SetActive(false);
             EspadaLiberada = true;
             Espada2Liberada = false;
             Destroy(other.gameObject, 0.5f);
         }
         if (other.gameObject.tag == "Espada2")
         {
+            SwoordF.SetActive(true);
+            SwoordM.SetActive(false);
             EspadaLiberada = false;
             Espada2Liberada = true;
             Destroy(other.gameObject, 0.5f);
         }
         if (other.gameObject.tag == "Arco")
         {
+            ArcoCanvas.SetActive(true);
             ArcoLiberado = true;
             flechas += 10;
             Destroy(other.gameObject, 0.5f);
         }
 
-        if (other.gameObject.tag == "Keys" && keys < 1 )
+        if (other.gameObject.tag == "Keys" && keysInventory < 1 )
         {
-            keys++;
-            BauRandon bau= FindObjectOfType<BauRandon>();
-            bau.SomarKeys();
+            AddKey();
+            KeysC.SetActive(true);
             Destroy(other.gameObject, 0.2f);
 
         }
+        if (other.gameObject.tag == "Coin")
+        {
+            coin++;
+            Destroy(other.gameObject);
+        }
+        else if (other.gameObject.tag == "Healf")
+        {
+            life++;
+            Destroy(other.gameObject);
+        }
     }
-    public void subtrairKeys(int value)
+    public bool HasKey()
     {
-        keys -= value;
+        return keysInventory > 0;
+    }
+
+    public void UseKey()
+    {
+        keysInventory--;
+    }
+
+    public void AddKey()
+    {
+        keysInventory++;
     }
 }
