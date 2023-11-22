@@ -12,6 +12,9 @@ TagManager:
   - Book
   - Coin
   - Healf
+  - Keydoors
+  - Flecha
+  - Checkpoint
   layers:
   - Default
   - TransparentFX

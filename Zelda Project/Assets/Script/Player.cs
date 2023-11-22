@@ -3,23 +3,26 @@ using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
-{
+{ 
     [Header("Componentes: ")]
     public Animator animator;
     public Rigidbody2D rb;
     public GameObject Arco;
+    public Vector3 lastCheckpointPosition;
 
     [Header("Variaveis int: ")]
     public int life;
     public int keysInventory;
     public int flechas;
     public int coin;
+    private int Vida = 4;
+    public int KeysDoors;
 
     [Header("Variaveis float: ")]
     public float speed = 5f;
-
     public float horizontal;
     public float vertical;
 
@@ -35,6 +38,7 @@ public class Player : MonoBehaviour
     public bool ArcoLiberado = false;
     public bool AtackArco;
     public bool EstouComEspada = true;
+    public bool isdead;
     
     [Header("Arco e Flecha: ")]
     public GameObject flechaPrefab; 
@@ -63,8 +67,12 @@ public class Player : MonoBehaviour
     }
     void Update()
     {
-        AtackETroca();
-        UpdateCanvas();
+        if (isdead == false)
+        {
+            die();
+            AtackETroca();
+            UpdateCanvas();
+        }
     }
     private void FixedUpdate()
     {
@@ -319,7 +327,12 @@ public class Player : MonoBehaviour
             AddKey();
             KeysC.SetActive(true);
             Destroy(other.gameObject, 0.2f);
-
+        }
+        if (other.gameObject.tag == "Keysdoors" && KeysDoors < 1 )
+        {
+            AddKey();
+            KeysC.SetActive(true);
+            Destroy(other.gameObject, 0.2f);
         }
         if (other.gameObject.tag == "Coin")
         {
@@ -331,17 +344,69 @@ public class Player : MonoBehaviour
             life++;
             Destroy(other.gameObject);
         }
+        else if (other.gameObject.tag == "Vida")
+        {
+            Vida++;
+            Destroy(other.gameObject);
+        }
+        if (other.gameObject.tag == "Checkpoint")
+        {
+            SaveCheckpoint(other.transform.position);
+            Destroy(other.gameObject);
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Enemy")
+        {
+            life--;
+        }
+    }
+
+    void die()
+    {
+        if (life <= 0)
+        {
+            respawn();
+        }
+
+        if (Vida <=0 )
+        {
+            SceneManager.LoadScene(1);
+        }
+    }
+    void respawn()
+    {
+        StartCoroutine(RespawnCoroutine());
+    }
+    IEnumerator RespawnCoroutine()
+    {
+        animator.SetTrigger("Die");
+        isdead = true;
+        walkLiberado = false;
+        Vida--;
+        rb.velocity = Vector2.zero;
+        yield return new WaitForSeconds(2f);
+        isdead = false;
+        walkLiberado = true;
+        animator.SetTrigger("Respawn");
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        player.transform.position = lastCheckpointPosition;
+        life = 3;
+    }
+    void SaveCheckpoint(Vector3 checkpointPosition)
+    {
+        lastCheckpointPosition = checkpointPosition;
     }
     public bool HasKey()
     {
         return keysInventory > 0;
     }
-
     public void UseKey()
     {
         keysInventory--;
     }
-
     public void AddKey()
     {
         keysInventory++;
