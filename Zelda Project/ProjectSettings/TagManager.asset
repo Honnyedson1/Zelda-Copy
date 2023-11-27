@@ -15,6 +15,7 @@ TagManager:
   - Keydoors
   - Flecha
   - Checkpoint
+  - Loja
   layers:
   - Default
   - TransparentFX
@@ -24,7 +25,7 @@ TagManager:
   - UI
   - 
   - 
-  - 
+  - Weapons
   - 
   - 
   - 

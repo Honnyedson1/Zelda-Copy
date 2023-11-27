@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
+using System.Security.Cryptography;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Assertions.Must;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
@@ -114,34 +116,29 @@ public class Player : MonoBehaviour
             StartCoroutine(CorotinaAtaqueArco());
         }
     }
-    void Move()
+void Move()
+{
+    if (walkLiberado == true)
     {
-        if (walkLiberado == true)
+        horizontal = Input.GetAxis("Horizontal");
+        vertical = Input.GetAxis("Vertical");
+
+        Vector2 movement = new Vector2(horizontal, vertical)* speed;
+        rb.velocity = movement;
+        UpdateAnimationState();
+        if (Input.GetMouseButton(0) && isAttacking == false && EstouComEspada == true)
         {
-            horizontal = Input.GetAxis("Horizontal");
-            vertical = Input.GetAxis("Vertical");
-
-            Vector2 movement = new Vector2(horizontal * speed, vertical * speed);
-            if (walkLiberado == true)
-            {
-                rb.velocity = movement;
-                UpdateAnimationState();
-            }
-
-            if (Input.GetMouseButton(0) && isAttacking == false && EstouComEspada == true)
-            {
-                StartCoroutine(AttackCoroutine());
-            }
+            StartCoroutine(AttackCoroutine());
         }
-
     }
+}
     void UpdateAnimationState()
     {
         if (walkLiberado == true)
         {
             if (horizontal > 0)
             {
-               
+              
                 flechaSpeedH = 10f;
                 flechaSpeedV = 0f;
                 flechaPrefab.transform.eulerAngles = new Vector3(180f, 0f, 0f);
@@ -294,10 +291,6 @@ public class Player : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.tag == "Enemy")
-        {
-            Destroy(other.gameObject);
-        }
         if (other.gameObject.tag == "Espada")
         {
             SwoordM.SetActive(true);
@@ -328,10 +321,10 @@ public class Player : MonoBehaviour
             KeysC.SetActive(true);
             Destroy(other.gameObject, 0.2f);
         }
-        if (other.gameObject.tag == "Keysdoors" && KeysDoors < 1 )
+        if (other.gameObject.tag == "Keydoors" && KeysDoors < 1 )
         {
-            AddKey();
-            KeysC.SetActive(true);
+            KeysDoors++;
+            KeysDors.SetActive(true);
             Destroy(other.gameObject, 0.2f);
         }
         if (other.gameObject.tag == "Coin")
@@ -351,19 +344,11 @@ public class Player : MonoBehaviour
         }
         if (other.gameObject.tag == "Checkpoint")
         {
-            SaveCheckpoint(other.transform.position);
-            Destroy(other.gameObject);
+            SaveCheckpoint(other.transform.position); 
+            Destroy(other.GetComponent<BoxCollider2D>());
+            other.GetComponent<Animator>().SetBool("Liberado", true);
         }
     }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.tag == "Enemy")
-        {
-            life--;
-        }
-    }
-
     void die()
     {
         if (life <= 0)
@@ -398,6 +383,11 @@ public class Player : MonoBehaviour
     void SaveCheckpoint(Vector3 checkpointPosition)
     {
         lastCheckpointPosition = checkpointPosition;
+    }
+
+    public void getHit(int dmg)
+    {
+        life -= dmg;
     }
     public bool HasKey()
     {
