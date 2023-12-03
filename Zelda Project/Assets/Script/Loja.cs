@@ -17,12 +17,10 @@ public class Loja : MonoBehaviour
     {
         if (estaNaLoja == true)
         {
-            Debug.Log("Dentro da loja!");
             lojaUI.SetActive(true);
         }
         else
         {
-            Debug.Log("Fora da loja!");
             lojaUI.SetActive(false);
         }
     }

@@ -14,13 +14,21 @@ public class Player : MonoBehaviour
     public Rigidbody2D rb;
     public GameObject Arco;
     public Vector3 lastCheckpointPosition;
+    private GameObject player;
 
+    [Header("TelePorts")] 
+    public GameObject TeleportVila;
+    public GameObject TeleportCastelo;
+    public GameObject TeleportevilaPricipal;
+    public GameObject TeleportePraia;
+    public GameObject PortaDoCastelo;
+        
     [Header("Variaveis int: ")]
     public int life;
     public int keysInventory;
     public int flechas;
     public int coin;
-    private int Vida = 4;
+    public  int Vida = 4;
     public int KeysDoors;
 
     [Header("Variaveis float: ")]
@@ -59,16 +67,20 @@ public class Player : MonoBehaviour
     public Text TextMoeda;
     public Text TextLife;
     public Text TextFlechas;
+    public Text TextVida;
 
     void Start()
     {
+        TextVida.text = Vida.ToString(); 
         UpdateCanvas();
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         keysInventory = 0;
+        player = GameObject.FindGameObjectWithTag("Player");
     }
     void Update()
     {
+        
         if (isdead == false)
         {
             die();
@@ -92,6 +104,7 @@ public class Player : MonoBehaviour
         TextFlechas.text = " " + flechas;
         TextLife.text = " " + life;
         TextMoeda.text = " " + coin;
+        TextVida.text = " " + Vida;
     }
     void AtackETroca()
     {
@@ -348,6 +361,27 @@ void Move()
             Destroy(other.GetComponent<BoxCollider2D>());
             other.GetComponent<Animator>().SetBool("Liberado", true);
         }
+
+        if (other.gameObject.layer == 9)
+        {
+            player.transform.position = TeleportePraia.gameObject.transform.position;
+        }
+        if (other.gameObject.layer == 10)
+        {
+            player.transform.position = TeleportVila.gameObject.transform.position;
+        }
+        if (other.gameObject.layer == 11)
+        {
+            player.transform.position = TeleportevilaPricipal.gameObject.transform.position;
+        }
+        if (other.gameObject.layer == 12)
+        {
+            player.transform.position = TeleportCastelo.gameObject.transform.position;
+        }
+        if (other.gameObject.layer == 13)
+        {
+            player.transform.position = PortaDoCastelo.gameObject.transform.position;
+        }
     }
     void die()
     {
@@ -376,7 +410,6 @@ void Move()
         isdead = false;
         walkLiberado = true;
         animator.SetTrigger("Respawn");
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
         player.transform.position = lastCheckpointPosition;
         life = 3;
     }

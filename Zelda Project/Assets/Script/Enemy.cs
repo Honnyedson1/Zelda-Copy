@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -79,6 +80,16 @@ public class Enemy : MonoBehaviour
                 rig.velocity = Vector2.zero;
             }
         }
+        if (other.gameObject.tag == "Flecha")
+        {
+            vida--;
+            Vector2 adjustPositionDirection = (transform.position - other.transform.position).normalized;
+            transform.position = new Vector2(transform.position.x + adjustPositionDirection.x * 1f, transform.position.y + adjustPositionDirection.y * 1f);
+            if (rig != null)
+            {
+                rig.velocity = Vector2.zero;
+            }
+        }
     }
     IEnumerator MeleeAttack()
     {
@@ -97,7 +108,6 @@ public class Enemy : MonoBehaviour
         canAttack = true;
         speed = 2f;
     }
-
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;
