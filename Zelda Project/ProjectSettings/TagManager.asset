@@ -16,6 +16,7 @@ TagManager:
   - Flecha
   - Checkpoint
   - Loja
+  - Trocadevila
   layers:
   - Default
   - TransparentFX
