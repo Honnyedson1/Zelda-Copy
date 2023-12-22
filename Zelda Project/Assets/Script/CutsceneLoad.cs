@@ -28,9 +28,9 @@ public class CutsceneLoad : MonoBehaviour
         playerCutscene.animator.SetInteger("Transition", 0);
         yield return new WaitForSeconds(0.8f);
         playerCutscene.walkLiberado = false;
-        anim.SetBool("Activation", false);
         playerCutscene.trocou = false;
         yield return new WaitForSeconds(0.8f);
+        anim.SetBool("Activation", false);
         playerCutscene.walkLiberado = true;
         playerCutscene.speed = 5f;
     }

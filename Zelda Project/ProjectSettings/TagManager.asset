@@ -17,6 +17,7 @@ TagManager:
   - Checkpoint
   - Loja
   - Trocadevila
+  - Espinhos
   layers:
   - Default
   - TransparentFX

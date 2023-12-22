@@ -368,6 +368,11 @@ void Move()
             trocou = true;
         }
 
+        if (other.gameObject.tag == "Espinhos")
+        {
+            life--;
+        }
+
         if (other.gameObject.layer == 9)
         {
             player.transform.position = TeleportePraia.gameObject.transform.position;
