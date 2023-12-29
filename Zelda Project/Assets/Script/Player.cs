@@ -367,10 +367,9 @@ void Move()
         {
             trocou = true;
         }
-
         if (other.gameObject.tag == "Espinhos")
         {
-            life--;
+            life = 0;
         }
 
         if (other.gameObject.layer == 9)
