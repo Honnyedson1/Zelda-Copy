@@ -30,6 +30,7 @@ public class Player : MonoBehaviour
     public int coin;
     public  int Vida = 4;
     public int KeysDoors;
+    
 
     [Header("Variaveis float: ")]
     public float speed = 5f;
@@ -49,6 +50,7 @@ public class Player : MonoBehaviour
     public bool AtackArco;
     public bool EstouComEspada = true;
     public bool isdead;
+    public bool trocou;
     
     [Header("Arco e Flecha: ")]
     public GameObject flechaPrefab; 
@@ -360,6 +362,14 @@ void Move()
             SaveCheckpoint(other.transform.position); 
             Destroy(other.GetComponent<BoxCollider2D>());
             other.GetComponent<Animator>().SetBool("Liberado", true);
+        }
+        if (other.gameObject.tag == "Trocadevila")
+        {
+            trocou = true;
+        }
+        if (other.gameObject.tag == "Espinhos")
+        {
+            life = 0;
         }
 
         if (other.gameObject.layer == 9)
