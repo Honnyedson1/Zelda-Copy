@@ -22,6 +22,8 @@ public class Player : MonoBehaviour
     public GameObject TeleportevilaPricipal;
     public GameObject TeleportePraia;
     public GameObject PortaDoCastelo;
+    public GameObject Casa;
+    public GameObject Quarto;
         
     [Header("Variaveis int: ")]
     public int life;
@@ -391,6 +393,14 @@ void Move()
         if (other.gameObject.layer == 13)
         {
             player.transform.position = PortaDoCastelo.gameObject.transform.position;
+        }
+        if (other.gameObject.layer == 14)
+        {
+            player.transform.position = Quarto.gameObject.transform.position;
+        }
+        if (other.gameObject.layer == 15)
+        {
+            player.transform.position = Casa.gameObject.transform.position;
         }
     }
     void die()
