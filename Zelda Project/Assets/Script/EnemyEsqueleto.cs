@@ -104,7 +104,7 @@ public class EnemyEsqueleto : MonoBehaviour
             podeAtacar = false;
             anim.SetInteger("Transition", 1);
             yield return new WaitForSeconds(1.0f);
-            //controler.getHit(1);
+            controler.getHit(1);
             yield return new WaitForSeconds(0.8f);
             yield return new WaitForSeconds(1.0f);
             anim.SetInteger("Transition", 0);

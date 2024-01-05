@@ -62,7 +62,9 @@ public class Player : MonoBehaviour
     public float flechaSpeedV;
     public float flechaSpeedH;
 
-    [Header("Canvas: ")] 
+    [Header("Canvas: ")]
+    public GameObject victory;
+    public GameObject gameover;
     public GameObject SwoordM;
     public GameObject SwoordF;
     public GameObject ArcoCanvas;
@@ -87,7 +89,6 @@ public class Player : MonoBehaviour
     }
     void Update()
     {
-        
         if (isdead == false)
         {
             die();
@@ -380,6 +381,11 @@ void Move()
             life = 0;
         }
 
+        if (other.gameObject.tag == "Victory")
+        {
+            victory.SetActive(true);
+        }
+
         if (other.gameObject.layer == 9)
         {
             player.transform.position = TeleportePraia.gameObject.transform.position;
@@ -424,7 +430,7 @@ void Move()
 
         if (Vida <=0 )
         {
-            SceneManager.LoadScene(1);
+            gameover.SetActive(true);
         }
     }
     void respawn()

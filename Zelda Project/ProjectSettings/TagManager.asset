@@ -20,6 +20,7 @@ TagManager:
   - Espinhos
   - Arbustro
   - AtackEnemy
+  - Victory
   layers:
   - Default
   - TransparentFX
