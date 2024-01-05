@@ -18,6 +18,8 @@ TagManager:
   - Loja
   - Trocadevila
   - Espinhos
+  - Arbustro
+  - AtackEnemy
   layers:
   - Default
   - TransparentFX
@@ -33,8 +35,8 @@ TagManager:
   - PricipalVila
   - Castelo Vilage
   - PortaDo castelo
-  - 
-  - 
+  - Quarto Link
+  - Portadacasa
   - 
   - 
   - 

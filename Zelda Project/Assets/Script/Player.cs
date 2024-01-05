@@ -15,6 +15,8 @@ public class Player : MonoBehaviour
     public GameObject Arco;
     public Vector3 lastCheckpointPosition;
     private GameObject player;
+    public AudioClip[] clip;
+    public AudioSource source;
 
     [Header("TelePorts")] 
     public GameObject TeleportVila;
@@ -75,6 +77,7 @@ public class Player : MonoBehaviour
 
     void Start()
     {
+        source = GetComponent<AudioSource>();
         TextVida.text = Vida.ToString(); 
         UpdateCanvas();
         animator = GetComponent<Animator>();
@@ -224,6 +227,7 @@ void Move()
             isAttacking = true;
             walkLiberado = false;
             rb.velocity = Vector2.zero;
+            playsound(0);
             if (AttackUp)
             {
                 animator.SetInteger("Transition", 8);
@@ -245,6 +249,7 @@ void Move()
         }
         if (Espada2Liberada == true)
         {
+            playsound(0);
             isAttacking = true;
             walkLiberado = false;
             rb.velocity = Vector2.zero;
@@ -278,6 +283,7 @@ void Move()
             rb.velocity = Vector2.zero;
             GameObject flecha = Instantiate(flechaPrefab, firePoint.position, Quaternion.identity);
             Rigidbody2D flechaRb = flecha.GetComponent<Rigidbody2D>();
+            playsound(1);
             flechaRb.velocity = new Vector2(flechaSpeedH, flechaSpeedV);
             float angle = 0f;
             if (AttackUp)
@@ -403,6 +409,12 @@ void Move()
             player.transform.position = Casa.gameObject.transform.position;
         }
     }
+
+    void playsound(int sound)
+    {
+        source.clip = clip[sound];
+        source.Play();
+    }
     void die()
     {
         if (life <= 0)
@@ -418,6 +430,26 @@ void Move()
     void respawn()
     {
         StartCoroutine(RespawnCoroutine());
+    }
+    private void FlipTowardsEnemy()
+    {
+        // Substitua "Enemy" pelo tag ou identificador do GameObject do inimigo
+        GameObject enemy = GameObject.FindGameObjectWithTag("Enemy");
+
+        if (enemy != null)
+        {
+            Vector3 direction = enemy.transform.position - transform.position;
+
+            // Flip o jogador com base na direção
+            if (direction.x > 0)
+            {
+                transform.localScale = new Vector3(1f, 1f, 1f);
+            }
+            else if (direction.x < 0)
+            {
+                transform.localScale = new Vector3(-1f, 1f, 1f);
+            }
+        }
     }
     IEnumerator RespawnCoroutine()
     {
